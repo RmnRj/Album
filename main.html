@@ -49,19 +49,48 @@
             display: flex;
             gap: 10px;
         }
-        button {
-            padding: 10px 20px;
-            font-size: 16px;
+         .lovely-button {
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #fff;
+            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            border: none;
+            border-radius: 50px;
             cursor: pointer;
+            box-shadow: 0px 0px 20px rgba(255, 64, 107, 0.7);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lovely-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.3);
+            transition: all 0.5s ease;
+        }
+
+        .lovely-button:hover::before {
+            left: 100%;
+        }
+
+        .lovely-button:hover {
+            box-shadow: 0px 0px 30px rgba(255, 75, 43, 0.9);
         }
     </style>
 </head>
 <body>
     <div class="container" id="photoContainer"></div>
     <div id="controls">
-        <button id="rotateLeft">Rotate Left</button>
-        <button id="toggleRotation">Pause</button>
-        <button id="rotateRight">Rotate Right</button>
+        <button id="rotateLeft"  class="lovely-button">Rotate Left</button>
+        <button id="toggleRotation" class="lovely-button" >Pause</button>
+        <button id="rotateRight"  class="lovely-button">Rotate Right</button>
     </div>
 
     <script>
