@@ -92,7 +92,7 @@
             heart.classList.add('emoji');
             heart.textContent = '❤️';
             heart.style.left = `${Math.random() * 100}vw`;
-            heart.style.animationDuration = `${2 + Math.random() * 3}s`; // Random duration for floating
+            heart.style.animationDuration = `${5}s`; // Random duration for floating
             heart.style.zIndex = 3; // Ensure hearts float in front
             document.body.appendChild(heart);
 
@@ -102,7 +102,7 @@
             }, 5000);
         }
 
-        setInterval(createHeart, 500); // Create heart every 500ms
+        setInterval(createHeart, 300); // Create heart every 300ms
 
         function goBack() {
             window.history.back();
