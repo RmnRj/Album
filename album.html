@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Circular Photo Viewer</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #000;
+            overflow: hidden;
+        }
+        .container {
+            position: relative;
+            width: 600px;
+            height: 600px;
+        }
+        .photo {
+            position: absolute;
+            width: 150px;
+            height: 225px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            transition: all 0.5s;
+            cursor: pointer;
+            overflow: hidden;
+        }
+        .photo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .photo.active {
+            width: 300px;
+            height: 450px;
+            z-index: 10;
+        }
+        #controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="photoContainer"></div>
+    <div id="controls">
+        <button id="rotateLeft">Rotate Left</button>
+        <button id="toggleRotation">Pause</button>
+        <button id="rotateRight">Rotate Right</button>
+    </div>
+
+    <script>
+        const container = document.getElementById('photoContainer');
+        const toggleRotationBtn = document.getElementById('toggleRotation');
+        const rotateLeftBtn = document.getElementById('rotateLeft');
+        const rotateRightBtn = document.getElementById('rotateRight');
+        const photos = [
+            'img/Maya1.jpg?height=450&width=300',
+            'img/Maya2.jpg?height=450&width=300',
+            'img/Maya3.jpg?height=450&width=300',
+            'img/Maya4.png?height=450&width=300',
+            'img/Maya5.jpg?height=450&width=300',
+            'img/Maya6.jpg?height=450&width=300',
+            'img/Maya7.jpg?height=450&width=300',
+            'img/Maya8.jpg?height=450&width=300'
+        ];
+        let angle = 0;
+        let isRotating = true;
+        let activePhoto = null;
+        let rotationInterval;
+
+        function createPhotoElements() {
+            photos.forEach((photo, index) => {
+                const photoElement = document.createElement('div');
+                photoElement.className = 'photo';
+                photoElement.innerHTML = `<img src="${photo}" alt="Photo ${index + 1}">`;
+                photoElement.addEventListener('click', () => focusPhoto(photoElement, index));
+                container.appendChild(photoElement);
+            });
+        }
+        function positionPhotos() {
+            const radius = 250;
+            const photoElements = document.querySelectorAll('.photo');
+            photoElements.forEach((photo, index) => {
+                const photoAngle = (index * 45 + angle) * (Math.PI / 180);
+                const x = Math.cos(photoAngle) * radius;
+                const z = Math.sin(photoAngle) * radius;
+                const scale = (z + radius) / (2 * radius);
+                photo.style.transform = `translate(${x}px, 0) scale(${scale})`;
+                photo.style.zIndex = Math.floor(scale * 100);
+            });
+        }
+
+        function rotatePhotos(direction = 1) {
+            angle += direction;
+            if (angle >= 360) angle -= 360;
+            if (angle < 0) angle += 360;
+            positionPhotos();
+        }
+
+        function startRotation() {
+            if (rotationInterval) clearInterval(rotationInterval);
+            rotationInterval = setInterval(() => rotatePhotos(1), 100);
+        }
+
+        function stopRotation() {
+            clearInterval(rotationInterval);
+        }
+
+        function toggleRotation() {
+            isRotating = !isRotating;
+            if (isRotating) {
+                startRotation();
+                toggleRotationBtn.textContent = 'Pause';
+            } else {
+                stopRotation();
+                toggleRotationBtn.textContent = 'Resume';
+            }
+        }
+
+        function focusPhoto(photo, index) {
+            if (activePhoto) {
+                activePhoto.classList.remove('active');
+            }
+            activePhoto = photo;
+            activePhoto.classList.add('active');
+            stopRotation();
+            isRotating = false;
+            toggleRotationBtn.textContent = 'Resume';
+
+            const targetAngle = -index * 45;
+            const rotateToFront = setInterval(() => {
+                const diff = targetAngle - angle;
+                if (Math.abs(diff) < 1) {
+                    angle = targetAngle;
+                    clearInterval(rotateToFront);
+                    setTimeout(() => {
+                        if (!isRotating) {
+                            toggleRotation();
+                        }
+                    }, 8000);
+                } else {
+                    angle += diff * 0.1;
+                }
+                positionPhotos();
+            }, 20);
+        }
+
+        createPhotoElements();
+        positionPhotos();
+        startRotation();
+
+        toggleRotationBtn.addEventListener('click', toggleRotation);
+        rotateLeftBtn.addEventListener('click', () => rotatePhotos(-1));
+        rotateRightBtn.addEventListener('click', () => rotatePhotos(1));
+
+        // Keyboard controls
+        document.addEventListener('keydown', (e) => {
+            switch(e.key) {
+                case 'ArrowLeft':
+                    rotatePhotos(-1);
+                    break;
+                case 'ArrowRight':
+                    rotatePhotos(1);
+                    break;
+                case ' ':
+                    toggleRotation();
+                    break;
+            }
+        });
+    </script>
+</body>
+</html>
