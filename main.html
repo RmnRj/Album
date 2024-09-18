@@ -88,16 +88,16 @@
 <body>
     <div class="container" id="photoContainer"></div>
     <div id="controls">
-        <button id="rotateLeft"  class="lovely-button">Rotate Left</button>
         <button id="toggleRotation" class="lovely-button" >Pause</button>
-        <button id="rotateRight"  class="lovely-button">Rotate Right</button>
+        <a href="see_something.html">
+            <button id="seeSomething" class="lovely-button">See Something</button>
+        </a>
     </div>
 
     <script>
         const container = document.getElementById('photoContainer');
         const toggleRotationBtn = document.getElementById('toggleRotation');
-        const rotateLeftBtn = document.getElementById('rotateLeft');
-        const rotateRightBtn = document.getElementById('rotateRight');
+    
         const photos = [
             'img/Maya1.jpg?height=450&width=300',
             'img/Maya2.jpg?height=450&width=300',
@@ -195,8 +195,6 @@
         startRotation();
 
         toggleRotationBtn.addEventListener('click', toggleRotation);
-        rotateLeftBtn.addEventListener('click', () => rotatePhotos(-1));
-        rotateRightBtn.addEventListener('click', () => rotatePhotos(1));
 
         // Keyboard controls
         document.addEventListener('keydown', (e) => {
