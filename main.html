@@ -3,8 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Circular Photo Viewer</title>
-    <style>
+    <title>Message for You</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Raleway:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="button.css">
+    <title>Love For My Maya❤️</title>
+   <style>
+        
         body {
             margin: 0;
             padding: 0;
@@ -14,202 +18,97 @@
             height: 100vh;
             background-color: #000;
             overflow: hidden;
+            font-family: 'Raleway', sans-serif;
         }
-        .container {
+        .message-frame {
+            padding: 30px;
+            background: #fff;
+            border: 15px solid pink;
+            border-radius: 30px;
+            box-shadow: 0 0 40px rgba(255, 64, 107, 0.8);
+            text-align: center;
             position: relative;
             width: 600px;
-            height: 600px;
+            height: 350px;
+            z-index: 1;
         }
-        .photo {
+        .message-frame h1 {
+            color: #ff416c;
+            font-size: 42px;
+            font-family: 'Dancing Script', cursive;
+            position: relative;
+            z-index: 2; /* Ensures text stays on top of hearts */
+        }
+        .message-frame p {
+            font-size: 22px;
+            font-family: 'Raleway', sans-serif;
+            color: #333;
+            position: relative;
+            z-index: 2; /* Ensures text stays on top of hearts */
+        }
+        .emoji {
+            font-size: 40px;
             position: absolute;
-            width: 150px;
-            height: 225px;
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
-            transition: all 0.5s;
-            cursor: pointer;
-            overflow: hidden;
+            bottom: 0;
+            z-index: 3; /* Places hearts in front of the text */
+            animation: floatUp 3s ease-in infinite;
         }
-        .photo img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        @keyframes floatUp {
+            0% { transform: translateY(100vh); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(-100vh); opacity: 0; }
         }
-        .photo.active {
-            width: 300px;
-            height: 450px;
-            z-index: 10;
-        }
-        #controls {
+        .back-button {
             position: absolute;
             bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
-            display: flex;
-            gap: 10px;
-        }
-         .lovely-button {
-            padding: 15px 30px;
-            font-size: 18px;
-            font-weight: bold;
-            text-transform: uppercase;
-            color: #fff;
-            background: linear-gradient(45deg, #ff416c, #ff4b2b);
+            color: white;
             border: none;
-            border-radius: 50px;
+            border-radius: 20px;
+            font-size: 18px;
             cursor: pointer;
-            box-shadow: 0px 0px 20px rgba(255, 64, 107, 0.7);
-            transition: all 0.4s ease;
-            position: relative;
-            overflow: hidden;
+            z-index: 4; /* Ensure button is above everything */
         }
-
-        .lovely-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.3);
-            transition: all 0.5s ease;
-        }
-
-        .lovely-button:hover::before {
-            left: 100%;
-        }
-
-        .lovely-button:hover {
-            box-shadow: 0px 0px 30px rgba(255, 75, 43, 0.9);
-        }
+    
     </style>
 </head>
 <body>
-    <div class="container" id="photoContainer"></div>
-    <div id="controls">
-        <button id="toggleRotation" class="lovely-button" >Pause</button>
+
+    <div class="message-frame">
+        <h1>For My Beautiful Maya 💖</h1>
+        <p>You are the sunshine of my life, the reason for my smile, and my greatest love. I love you endlessly! 🌹💐</p>
+        
+    </div>
+    <div>
         <a href="see_something.html">
-            <button id="seeSomething" class="lovely-button">See Something</button>
+            <button id="seeSomething" class="lovely-button back-button">See Something</button>
         </a>
     </div>
 
     <script>
-        const container = document.getElementById('photoContainer');
-        const toggleRotationBtn = document.getElementById('toggleRotation');
-    
-        const photos = [
-            'img/Maya1.jpg?height=450&width=300',
-            'img/Maya2.jpg?height=450&width=300',
-            'img/Maya3.jpg?height=450&width=300',
-            'img/Maya4.png?height=450&width=300',
-            'img/Maya5.jpg?height=450&width=300',
-            'img/Maya6.jpg?height=450&width=300',
-            'img/Maya7.jpg?height=450&width=300',
-            'img/Maya8.jpg?height=450&width=300'
-        ];
-        let angle = 0;
-        let isRotating = true;
-        let activePhoto = null;
-        let rotationInterval;
+        // Continuously generate heart emojis in front of the text
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('emoji');
+            heart.textContent = '❤️';
+            heart.style.left = `${Math.random() * 100}vw`;
+            heart.style.animationDuration = `${2 + Math.random() * 3}s`; // Random duration for floating
+            heart.style.zIndex = 3; // Ensure hearts float in front
+            document.body.appendChild(heart);
 
-        function createPhotoElements() {
-            photos.forEach((photo, index) => {
-                const photoElement = document.createElement('div');
-                photoElement.className = 'photo';
-                photoElement.innerHTML = `<img src="${photo}" alt="Photo ${index + 1}">`;
-                photoElement.addEventListener('click', () => focusPhoto(photoElement, index));
-                container.appendChild(photoElement);
-            });
-        }
-        function positionPhotos() {
-            const radius = 250;
-            const photoElements = document.querySelectorAll('.photo');
-            photoElements.forEach((photo, index) => {
-                const photoAngle = (index * 45 + angle) * (Math.PI / 180);
-                const x = Math.cos(photoAngle) * radius;
-                const z = Math.sin(photoAngle) * radius;
-                const scale = (z + radius) / (2 * radius);
-                photo.style.transform = `translate(${x}px, 0) scale(${scale})`;
-                photo.style.zIndex = Math.floor(scale * 100);
-            });
+            // Remove heart after floating out of view
+            setTimeout(() => {
+                heart.remove();
+            }, 5000);
         }
 
-        function rotatePhotos(direction = 1) {
-            angle += direction;
-            if (angle >= 360) angle -= 360;
-            if (angle < 0) angle += 360;
-            positionPhotos();
+        setInterval(createHeart, 500); // Create heart every 500ms
+
+        function goBack() {
+            window.history.back();
         }
-
-        function startRotation() {
-            if (rotationInterval) clearInterval(rotationInterval);
-            rotationInterval = setInterval(() => rotatePhotos(1), 100);
-        }
-
-        function stopRotation() {
-            clearInterval(rotationInterval);
-        }
-
-        function toggleRotation() {
-            isRotating = !isRotating;
-            if (isRotating) {
-                startRotation();
-                toggleRotationBtn.textContent = 'Pause';
-            } else {
-                stopRotation();
-                toggleRotationBtn.textContent = 'Resume';
-            }
-        }
-
-        function focusPhoto(photo, index) {
-            if (activePhoto) {
-                activePhoto.classList.remove('active');
-            }
-            activePhoto = photo;
-            activePhoto.classList.add('active');
-            stopRotation();
-            isRotating = false;
-            toggleRotationBtn.textContent = 'Resume';
-
-            const targetAngle = -index * 45;
-            const rotateToFront = setInterval(() => {
-                const diff = targetAngle - angle;
-                if (Math.abs(diff) < 1) {
-                    angle = targetAngle;
-                    clearInterval(rotateToFront);
-                    setTimeout(() => {
-                        if (!isRotating) {
-                            toggleRotation();
-                        }
-                    }, 8000);
-                } else {
-                    angle += diff * 0.1;
-                }
-                positionPhotos();
-            }, 20);
-        }
-
-        createPhotoElements();
-        positionPhotos();
-        startRotation();
-
-        toggleRotationBtn.addEventListener('click', toggleRotation);
-
-        // Keyboard controls
-        document.addEventListener('keydown', (e) => {
-            switch(e.key) {
-                case 'ArrowLeft':
-                    rotatePhotos(-1);
-                    break;
-                case 'ArrowRight':
-                    rotatePhotos(1);
-                    break;
-                case ' ':
-                    toggleRotation();
-                    break;
-            }
-        });
     </script>
+
 </body>
 </html>
